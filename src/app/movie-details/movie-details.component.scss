@@ -1,0 +1,9 @@
+.details {
+  display: flex;
+
+  p {
+    span:first-child {
+      font-weight: bold;
+    }
+  }
+}
