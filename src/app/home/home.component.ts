@@ -58,7 +58,7 @@ export class HomeComponent {
   }
 
   ngOnInit() {
-    console.log(this.moviesService.users.value(), this.moviesService.movieResource.value());
+    // console.log(this.moviesService.users.value(), this.moviesService.movieResource.value(), this,'ngOnInit');
   }
 
   fetchData() {
@@ -90,6 +90,7 @@ export class HomeComponent {
       // Add new movie
       this.addMovie();
     }
+        console.log('saveMovie', this);
   }
 
   addMovie(): void {
@@ -101,9 +102,16 @@ export class HomeComponent {
       description: this.movieFormData.description
     };
     
-    // Add to your data source (adjust based on your data management)
-    this.moviesService.addMovie(newMovie);
-    
+    this.moviesService.addMovie(newMovie).subscribe({
+  next: (response) => {console.log('Success!', response)
+
+      this.data.update(movies => 
+          movies.map(m => m.id === response.id ? response : m)
+        );
+  },
+  error: (err) => console.error('Error occurred:', err)
+});
+
     this.resetForm();
   }
 

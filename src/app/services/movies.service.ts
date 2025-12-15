@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import {Movie, MovieDetails} from '../model/movie.model';
 import {toSignal} from '@angular/core/rxjs-interop';
 import { fetchWithMocks } from '../mock.interceptor';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -34,13 +35,13 @@ export class MoviesService {
     },
 });
   
-  // getMovies(): Observable<Movie[]> {
-  //   return this.httpClient.get<Movie[]>('/movies');
-  // }
+  getMoviesWithHttp(): Observable<Movie[]> {
+    return this.httpClient.get<Movie[]>('/movies');
+  }
 
-  // getMovieDetails(movieId: string): Observable<MovieDetails> {
-  //   return this.httpClient.get<MovieDetails>('/movies/'+ movieId);
-  // }
+  getMovieDetailsWithHttp(movieId: string): Observable<MovieDetails> {
+    return this.httpClient.get<MovieDetails>('/movies/'+ movieId);
+  }
 
   filterMovieList(title = '', year = '', movies: Signal<Movie[]>) {
     console.log('filterMovieList', title, year, movies());
@@ -52,20 +53,16 @@ export class MoviesService {
     // );
      }
 
-    //  filterMovieList(title = '', year = ''): Observable<Movie[]> {
-    //   return this.getMovies().pipe(
-    //     map(movies => movies.filter(movie =>
-    //         (year.length < 4 || year.length === 4 && movie.release_date.split('-')[0].includes(year))
-    //         && movie.title.toLowerCase().includes(title))
-    //     )
-    //   );
-    // }
+     filterMovieListWithObservable(title = '', year = ''): Observable<Movie[]> {
+      return this.getMoviesWithHttp().pipe(
+        map(movies => movies.filter(movie =>
+            (year.length < 4 || year.length === 4 && movie.release_date.split('-')[0].includes(year))
+            && movie.title.toLowerCase().includes(title))
+        )
+      );
+    }
 
-    addMovie(newMovie: Movie): void {
-      // Here you would typically make an HTTP POST request to add the movie to the backend
-      // For demonstration, we will just log it to the console
-      console.log('Adding new movie:', newMovie);
-      // Example:
-      // this.httpClient.post('/movies', newMovie).subscribe();
+    addMovie(newMovie: Movie): Observable<any> {
+      return this.httpClient.post('/movies', newMovie);
     }
 }

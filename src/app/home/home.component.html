@@ -15,7 +15,7 @@
     <div *ngIf="!loading() && data().length === 0">No movies found.</div>
   </div>
   
-  <div class="movie-form-section">
+  <!-- <div class="movie-form-section">
     <h3>{{ editingMovie ? 'Edit Movie' : 'Add Movie' }}</h3>
     <form (ngSubmit)="saveMovie()">
       <div>
@@ -72,9 +72,9 @@
         </button>
       </div>
     </form>
-  </div>
+  </div> -->
   
-  <p>Parent counter {{ parentCounter }}</p>
+  <!-- <p>Parent counter {{ parentCounter }}</p> -->
 
   <div *ngIf="loading()">Loading movies...</div>
   @for(movie of data(); track movie.id) {

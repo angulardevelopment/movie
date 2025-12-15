@@ -36,20 +36,20 @@ import { CommonModule } from '@angular/common';
 
       <button [routerLink]="'details/'+ movie().id">Details</button>
 
-    <button (click)="store.increment()">Increment</button>
+    <!-- <button (click)="store.increment()">Increment</button>
     <button (click)="store.decrement()">Decrement</button>
     <button (click)="store.reset()">Reset</button>
 
     <button (click)="increment()"> Increment e </button>
 
         <div>Counter: {{ count() }}</div>
-      <button (click)="incrementModel()">j</button>
+      <button (click)="incrementModel()">j</button> -->
 
       <!-- unsupported -->
       <!-- <input type="text" [(ngModel)]="mySignal()" (change)="h()" /> -->
 
-      <input type="text" [value]="mySignal()" (input)="mySignal.set($any($event.target).value)" />
-      <input type="number" [value]="value()"  />
+      <!-- <input type="text" placeholder="text" [value]="mySignal()" (input)="mySignal.set($any($event.target).value)" />
+      <input type="number" placeholder="number" [value]="value()"  /> -->
     </div>
   `,
   standalone: true,
