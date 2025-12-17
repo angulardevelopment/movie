@@ -4,86 +4,90 @@
       <legend>Filters</legend>
       <label for="title">Title</label>
       <input #titleFilter type="text" name="title"
-             (input)="filter(titleFilter.value, yearFilter.value)"/>
-      <label for="releaseDate">Release year</label>
-      <input #yearFilter type="number" name="releaseDate"
-             (input)="filter(titleFilter.value, yearFilter.value)"/>
-    </fieldset>
-  </form>
-  
-  <div>
-    <div *ngIf="!loading() && data().length === 0">No movies found.</div>
-  </div>
-  
-  <!-- <div class="movie-form-section">
-    <h3>{{ editingMovie ? 'Edit Movie' : 'Add Movie' }}</h3>
-    <form (ngSubmit)="saveMovie()">
-      <div>
-        <label for="movieTitle">Title:</label>
-        <input 
-          id="movieTitle"
-          type="text" 
-          [(ngModel)]="movieFormData.title" 
-          name="title"
-          required
-          #title="ngModel">
-        <div *ngIf="title.invalid && title.touched" class="error">Title is required</div>
-      </div>
-      
-      <div>
-        <label for="movieYear">Release Year:</label>
-        <input 
-          id="movieYear"
-          type="number" 
-          [(ngModel)]="movieFormData.release_date" 
-          name="releaseDate"
-          required
-          #year="ngModel">
-        <div *ngIf="year.invalid && year.touched" class="error">Release year is required</div>
-      </div>
-      
-      <div>
-        <label for="movieGenre">Genre:</label>
-        <input 
-          id="movieGenre"
-          type="text" 
-          [(ngModel)]="movieFormData.genre" 
-          name="genre">
-      </div>
-      
-      <div>
-        <label for="movieDescription">Description:</label>
-        <textarea 
-          id="movieDescription"
-          [(ngModel)]="movieFormData.description" 
-          name="description">
-        </textarea>
-      </div>
-      
-      <div class="form-buttons">
-        <button type="submit" [disabled]="title.invalid || year.invalid">
-          {{ editingMovie ? 'Update' : 'Add' }} Movie
-        </button>
-        <button type="button" (click)="cancelEdit()" *ngIf="editingMovie">
-          Cancel
-        </button>
-        <button type="button" (click)="resetForm()">
-          Clear Form
-        </button>
-      </div>
-    </form>
-  </div> -->
-  
-  <!-- <p>Parent counter {{ parentCounter }}</p> -->
+        (input)="filter(titleFilter.value, yearFilter.value)"/>
+        <label for="releaseDate">Release year</label>
+        <input #yearFilter type="number" name="releaseDate"
+          (input)="filter(titleFilter.value, yearFilter.value)"/>
+        </fieldset>
+      </form>
 
-  <div *ngIf="loading()">Loading movies...</div>
-  @for(movie of data(); track movie.id) {
-    <app-movie-item 
-      [(countModel)]="parentCounter" 
-      [movie]="movie" 
-      appHighlight 
-      [isFavorite]="favoritesService.isFavorite(movie)()" 
-      (toggleFavorite)="favoritesService.toggleFavorite(movie)"
-      (editMovie)="editMovie(movie)"/>
-  }
-</div>
+      <div>
+        @if (!loading() && data().length === 0) {
+          <div>No movies found.</div>
+        }
+      </div>
+
+      <!-- <div class="movie-form-section">
+      <h3>{{ editingMovie ? 'Edit Movie' : 'Add Movie' }}</h3>
+      <form (ngSubmit)="saveMovie()">
+        <div>
+          <label for="movieTitle">Title:</label>
+          <input
+            id="movieTitle"
+            type="text"
+            [(ngModel)]="movieFormData.title"
+            name="title"
+            required
+            #title="ngModel">
+            <div *ngIf="title.invalid && title.touched" class="error">Title is required</div>
+          </div>
+
+          <div>
+            <label for="movieYear">Release Year:</label>
+            <input
+              id="movieYear"
+              type="number"
+              [(ngModel)]="movieFormData.release_date"
+              name="releaseDate"
+              required
+              #year="ngModel">
+              <div *ngIf="year.invalid && year.touched" class="error">Release year is required</div>
+            </div>
+
+            <div>
+              <label for="movieGenre">Genre:</label>
+              <input
+                id="movieGenre"
+                type="text"
+                [(ngModel)]="movieFormData.genre"
+                name="genre">
+              </div>
+
+              <div>
+                <label for="movieDescription">Description:</label>
+                <textarea
+                  id="movieDescription"
+                  [(ngModel)]="movieFormData.description"
+                  name="description">
+                </textarea>
+              </div>
+
+              <div class="form-buttons">
+                <button type="submit" [disabled]="title.invalid || year.invalid">
+                  {{ editingMovie ? 'Update' : 'Add' }} Movie
+                </button>
+                <button type="button" (click)="cancelEdit()" *ngIf="editingMovie">
+                  Cancel
+                </button>
+                <button type="button" (click)="resetForm()">
+                  Clear Form
+                </button>
+              </div>
+            </form>
+          </div> -->
+
+          <!-- <p>Parent counter {{ parentCounter }}</p> -->
+
+          @if (loading()) {
+            <div>Loading movies...</div>
+          }
+          @for(movie of data(); track movie.id) {
+            <app-movie-item
+              [(countModel)]="parentCounter"
+              [movie]="movie"
+              appHighlight
+              [isFavorite]="favoritesService.isFavorite(movie)()"
+              (toggleFavorite)="favoritesService.toggleFavorite(movie)"
+              (editMovie)="editMovie(movie)"/>
+            }
+          </div>

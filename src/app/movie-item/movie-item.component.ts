@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
 import { LikeStore } from '../like.store';
 import { FeatureStore } from '@mini-rx/signal-store';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 // import { 
 //   form, 
 //   required, 
@@ -58,9 +58,8 @@ import { CommonModule } from '@angular/common';
     MinToDurationPipe,
     RouterLink,
     FormsModule,
-    ReactiveFormsModule,
-    CommonModule
-  ],
+    ReactiveFormsModule
+],
   styleUrls: ['movie-item.component.scss']
 })
 export class MovieItemComponent {

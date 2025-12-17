@@ -5,7 +5,7 @@ import { Movie } from '../model/movie.model';
 import { MoviesService } from '../services/movies.service';
 import { FavoritesService } from '../services/favorites.service';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+
 import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
@@ -15,9 +15,8 @@ import { FormsModule } from '@angular/forms';
   imports: [
     HighlightDirective,
     MovieItemComponent,
-    CommonModule,
     FormsModule
-  ],
+],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
