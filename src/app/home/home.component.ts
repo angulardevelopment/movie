@@ -53,7 +53,6 @@ export class HomeComponent {
   filter(title: string, year: string) {
     const filtered = (this.moviesService.filterMovieList(title, year, this.movies));
     // this.movies.set(filtered);
-    console.log('filter', filtered);
   }
 
   ngOnInit() {
@@ -89,7 +88,6 @@ export class HomeComponent {
       // Add new movie
       this.addMovie();
     }
-        console.log('saveMovie', this);
   }
 
   addMovie(): void {

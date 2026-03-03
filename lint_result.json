@@ -1,0 +1,370 @@
+[
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\app.component.html",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\app.component.ts",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\app.config.ts",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\app.routes.ts",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\highlight.directive.ts",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\home\\home.component.html",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\home\\home.component.ts",
+        "messages": [
+            {
+                "ruleId": "@angular-eslint/prefer-inject",
+                "severity": 2,
+                "message": "Prefer using the inject() function over constructor parameter injection. Use Angular's migration schematic to automatically refactor: ng generate @angular/core:inject",
+                "line": 24,
+                "column": 15,
+                "nodeType": "TSParameterProperty",
+                "messageId": "preferInject",
+                "endLine": 24,
+                "endColumn": 51
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 1,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "import { Component, inject, model, signal, Signal, WritableSignal } from '@angular/core';\r\nimport { HighlightDirective } from '../highlight.directive';\r\nimport { MovieItemComponent } from '../movie-item/movie-item.component';\r\nimport { Movie } from '../model/movie.model';\r\nimport { MoviesService } from '../services/movies.service';\r\nimport { FavoritesService } from '../services/favorites.service';\r\nimport { HttpClient } from '@angular/common/http';\r\n\r\nimport { toObservable } from '@angular/core/rxjs-interop';\r\nimport { FormsModule } from '@angular/forms';\r\n\r\n@Component({\r\n  selector: 'app-home',\r\n  standalone: true,\r\n  imports: [\r\n    HighlightDirective,\r\n    MovieItemComponent,\r\n    FormsModule\r\n],\r\n  templateUrl: './home.component.html',\r\n  styleUrl: './home.component.scss'\r\n})\r\nexport class HomeComponent {\r\n  constructor(private moviesService: MoviesService) {\r\n    this.fetchData();\r\n  }\r\n  data = signal<Movie[]>([]);\r\n  loading = signal(true);\r\n  protected http = inject(HttpClient);\r\n  parentCounter = 0;\r\n  // editingMovie = signal<Movie | null>(null);\r\n  //  movieFormData = model({\r\n  //   id: 0,\r\n  //   title: '',\r\n  //   releaseDate: new Date().getFullYear(),\r\n  //   genre: '',\r\n  //   description: ''\r\n  // });\r\n    editingMovie: Movie | null = null;\r\n  movieFormData = {\r\n    id: 0,\r\n    title: '',\r\n    release_date: new Date().getFullYear().toString(),\r\n    genre: '',\r\n    description: ''\r\n  };\r\n\r\n  dummy = toObservable(this.data);\r\n  protected movies: Signal<Movie[]> = inject(MoviesService).getMovies();\r\n  protected favoritesService = inject(FavoritesService);\r\n  filteredMovies = signal<Movie[]>([]);\r\n\r\n  filter(title: string, year: string) {\r\n    const filtered = (this.moviesService.filterMovieList(title, year, this.movies));\r\n    // this.movies.set(filtered);\r\n  }\r\n\r\n  ngOnInit() {\r\n    // console.log(this.moviesService.users.value(), this.moviesService.movieResource.value(), this,'ngOnInit');\r\n  }\r\n\r\n  fetchData() {\r\n    this.loading.set(true);\r\n    this.http.get<Movie[]>('/movies').subscribe({\r\n      next: res => {\r\n        this.data.set(res);\r\n        this.loading.set(false);\r\n      },\r\n      error: () => this.loading.set(false)\r\n    });\r\n  }\r\n\r\n  //   editMovie(movie: Movie): void {\r\n  //   this.editingMovie.set(movie);\r\n  //   // this.movieFormData.update((val) => movie);\r\n  // }\r\n\r\n  editMovie(movie: Movie): void {\r\n    this.editingMovie = movie;\r\n    this.movieFormData = { ...movie };\r\n  }\r\n\r\n  saveMovie(): void {\r\n    if (this.editingMovie) {\r\n      // Update existing movie\r\n      this.updateMovie();\r\n    } else {\r\n      // Add new movie\r\n      this.addMovie();\r\n    }\r\n  }\r\n\r\n  addMovie(): void {\r\n    const newMovie: Movie = {\r\n      id: this.generateNewId(),\r\n      title: this.movieFormData.title,\r\n      release_date: this.movieFormData.release_date,\r\n      genre: this.movieFormData.genre,\r\n      description: this.movieFormData.description\r\n    };\r\n    \r\n    this.moviesService.addMovie(newMovie).subscribe({\r\n  next: (response) => {console.log('Success!', response)\r\n\r\n      this.data.update(movies => \r\n          movies.map(m => m.id === response.id ? response : m)\r\n        );\r\n  },\r\n  error: (err) => console.error('Error occurred:', err)\r\n});\r\n\r\n    this.resetForm();\r\n  }\r\n\r\n  updateMovie(): void {\r\n    if (this.editingMovie) {\r\n      const updatedMovie: Movie = {\r\n        ...this.editingMovie,\r\n        title: this.movieFormData.title,\r\n        release_date: this.movieFormData.release_date,\r\n        genre: this.movieFormData.genre,\r\n        description: this.movieFormData.description\r\n      };\r\n      \r\n      // Update your data source (adjust based on your data management)\r\n      // this.moviesService.updateMovie(updatedMovie);\r\n      \r\n      this.cancelEdit();\r\n    }\r\n  }\r\n\r\n  cancelEdit(): void {\r\n    this.editingMovie = null;\r\n    this.resetForm();\r\n  }\r\n\r\n  resetForm(): void {\r\n    this.movieFormData = {\r\n      id: 0,\r\n      title: '',\r\n      release_date: new Date().getFullYear().toString(),\r\n      genre: '',\r\n      description: ''\r\n    };\r\n  }\r\n\r\n  private generateNewId(): number {\r\n    // Simple ID generation - adjust based on your needs\r\n    return Math.max(...this.data().map(m => m.id)) + 1;\r\n  }\r\n}\r\n",
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\like.store.ts",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\mock.interceptor.ts",
+        "messages": [
+            {
+                "ruleId": "@typescript-eslint/no-explicit-any",
+                "severity": 2,
+                "message": "Unexpected any. Specify a different type.",
+                "line": 6,
+                "column": 33,
+                "nodeType": "TSAnyKeyword",
+                "messageId": "unexpectedAny",
+                "endLine": 6,
+                "endColumn": 36,
+                "suggestions": [
+                    {
+                        "messageId": "suggestUnknown",
+                        "fix": {
+                            "range": [
+                                198,
+                                201
+                            ],
+                            "text": "unknown"
+                        },
+                        "desc": "Use `unknown` instead, this will force you to explicitly, and safely assert the type is correct."
+                    },
+                    {
+                        "messageId": "suggestNever",
+                        "fix": {
+                            "range": [
+                                198,
+                                201
+                            ],
+                            "text": "never"
+                        },
+                        "desc": "Use `never` instead, this is useful when instantiating generic type parameters that you don't need to know the type of."
+                    }
+                ]
+            },
+            {
+                "ruleId": "no-useless-escape",
+                "severity": 2,
+                "message": "Unnecessary escape character: \\/.",
+                "line": 10,
+                "column": 39,
+                "nodeType": "Literal",
+                "messageId": "unnecessaryEscape",
+                "endLine": 10,
+                "endColumn": 40,
+                "suggestions": [
+                    {
+                        "messageId": "removeEscape",
+                        "fix": {
+                            "range": [
+                                290,
+                                291
+                            ],
+                            "text": ""
+                        },
+                        "desc": "Remove the `\\`. This maintains the current functionality."
+                    },
+                    {
+                        "messageId": "escapeBackslash",
+                        "fix": {
+                            "range": [
+                                290,
+                                290
+                            ],
+                            "text": "\\"
+                        },
+                        "desc": "Replace the `\\` with `\\\\` to include the actual backslash character."
+                    }
+                ]
+            },
+            {
+                "ruleId": "@typescript-eslint/ban-ts-comment",
+                "severity": 2,
+                "message": "Use \"@ts-expect-error\" instead of \"@ts-ignore\", as \"@ts-ignore\" will do nothing if the following line is error-free.",
+                "line": 153,
+                "column": 5,
+                "nodeType": "Line",
+                "messageId": "tsIgnoreInsteadOfExpectError",
+                "endLine": 153,
+                "endColumn": 18,
+                "suggestions": [
+                    {
+                        "messageId": "replaceTsIgnoreWithTsExpectError",
+                        "fix": {
+                            "range": [
+                                12778,
+                                12791
+                            ],
+                            "text": "// @ts-expect-error"
+                        },
+                        "desc": "Replace \"@ts-ignore\" with \"@ts-expect-error\"."
+                    }
+                ]
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 3,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "import {HttpEvent, HttpHandlerFn, HttpRequest, HttpResponse} from '@angular/common/http';\r\nimport {Observable, of} from 'rxjs';\r\n\r\ninterface Mock {\r\n  path: RegExp;\r\n  mockData: (param?: string) => any;\r\n}\r\n\r\nfunction createPathRegExp(path: string) {\r\n  const escapedPath = path.replace(/[-\\/\\\\^$*+?.()|[\\]{}]/g, '\\\\$&');\r\n  const regexPattern = escapedPath.replace(/:(\\w+)/g, '([^/]+)');\r\n  return new RegExp(`^${regexPattern}$`);\r\n}\r\n\r\nconst MOCKS: Mock[] = [\r\n  {path: createPathRegExp('/movies/:id'), mockData: (param) => {\r\n\r\n    const options = {\r\n      \"e80d5a37-620e-4be2-92b9-fb1f5262494f\": {\r\n        \"id\": \"e80d5a37-620e-4be2-92b9-fb1f5262494f\",\r\n        \"title\": \"Harry Potter and the Philosopher's Stone\",\r\n        \"duration\": \"152\",\r\n        \"budget\": \"125\",\r\n        \"release_date\": \"2001-11-04\",\r\n        \"box_office\": \"1.018\",\r\n        \"cinematographers\": [ \"John Seale\" ],\r\n        \"poster\": \"../assets/channels.png\",\r\n        \"producers\": [ \"Chris Columbus\", \"David Heyman\", \"Mark Radcliffe\" ],\r\n        \"summary\": \"Harry Potter’s dull life is completely changed on his eleventh birthday when a mysterious letter addressed to him arrives in the mail. After finding out about his real parents and a whole hidden wizarding world, he goes on to Hogwarts, his new magical school. From battling a troll to flying on broomsticks to catch golden snitches, Harry’s new life promises to be full of joy and adventure, until he finds out about a certain Dark Lord who murdered his parents is trying to regain power. With his friends Hermione and Ron, Harry sets out to find the philosopher’s stone before Voldemort to prevent his return. After advancing through a particularly difficult set of traps designed by the school, Harry faces the Dark Lord and manages to keep the Philosopher’s Stone safe.\"\r\n      },\r\n      \"1e04ad42-c21f-40d3-9a7e-0a521980c192\": {\r\n        \"id\": \"1e04ad42-c21f-40d3-9a7e-0a521980c192\",\r\n        \"title\": \"Harry Potter and the Chamber of Secrets\",\r\n        \"duration\": \"161\",\r\n        \"budget\": \"125\",\r\n        \"release_date\": \"2002-11-15\",\r\n        \"box_office\": \"879.6\",\r\n        \"cinematographers\": [ \"Roger Pratt\" ],\r\n        \"poster\": \"../assets/channels.png\",\r\n        \"producers\": [ \"Chris Columbus\", \"David Heyman\", \"Mark Radcliffe\" ],\r\n        \"summary\": \"Harry's second year at Hogwarts begins with a series of mishaps when he and Ron miss the train to Hogwarts. Furthermore, a mysterious Chamber of Secrets has been opened inside Hogwarts and students are getting petrified one after the another. Harry, Ron and Hermione start to uncover the dark tale behind the chamber using a diary Harry found, which leads them into the lair of an Acromantula. Ginny gets kidnapped and it is up to Harry to save her and the school from the monster of the Chamber of Secrets.\"\r\n      },\r\n      \"ab80790f-0f6d-4ca7-bd7e-e7e1f06e6982\": {\r\n        \"id\": \"ab80790f-0f6d-4ca7-bd7e-e7e1f06e6982\",\r\n        \"title\": \"Harry Potter and the Prisoner of Azkaban\",\r\n        \"duration\": \"142\",\r\n        \"budget\": \"130\",\r\n        \"release_date\": \"2002-11-15\",\r\n        \"box_office\": \"797.4\",\r\n        \"cinematographers\": [ \"Michael Seresin\" ],\r\n        \"poster\": \"../assets/channels.png\",\r\n\r\n        \"producers\": [ \"Chris Columbus\", \"David Heyman\", \"Mark Radcliffe\" ],\r\n        \"summary\": \" After unintentionally using magic against Aunt Marge, Harry arrives at the Leaky Cauldron and learns that a killer named Sirius Black is after him. Hogwarts is under a dark and grim spell with Dementors, the ghostly guardians of Azkaban, looking for Black. Harry and his friends spend their third year learning how to handle a half-horse half-eagle Hippogriff, repel shape-shifting Boggarts and master the art of Divination. Harry also inherits a strange map and finds out the truth about Sirius Black being his godfather. Battling against dementors and werewolves, an incredible story unfolds as Harry masters advanced magic, crosses the barriers of time and changes the course of more than one life.\"\r\n      },\r\n      \"cae233c5-6b08-4201-a665-194110d9c889\": {\r\n        \"id\": \"cae233c5-6b08-4201-a665-194110d9c889\",\r\n        \"title\": \"Harry Potter and the Goblet of Fire\",\r\n        \"duration\": \"157\",\r\n        \"budget\": \"150\",\r\n        \"release_date\": \"2005-11-06\",\r\n        \"box_office\": \"896.7\",\r\n        \"cinematographers\": [ \"Roger Pratt\" ],\r\n        \"poster\": \"../assets/channels.png\",\r\n        \"producers\": [ \"David Heyman\" ],\r\n        \"summary\": \"In his fourth year at Hogwarts, Harry is mysteriously selected as a champion for the Triwizard Tournament. Three dangerous tasks await the champions from different schools, each tougher than the next. With the help of his new Defence Against the Dark Arts teacher, Professor Moody, Harry manages to advance through dragons, water demons and enchanted mazes to find himself in the clutches of Lord Voldemort. With the return of the Dark Lord and the Ministry denying Harry’s claims, will things ever return to how they were?\"\r\n      },\r\n      \"d8a28625-0704-45fe-9be5-cd795eb1b8f4\": {\r\n        \"id\": \"d8a28625-0704-45fe-9be5-cd795eb1b8f4\",\r\n        \"title\": \"Harry Potter and the Order of the Phoenix\",\r\n        \"duration\": \"138\",\r\n        \"budget\": \"150-200\",\r\n        \"release_date\": \"2007-07-11\",\r\n        \"box_office\": \"942.2\",\r\n        \"cinematographers\": [ \"Sławomir Idziak\" ],\r\n       \"poster\": \"../assets/channels.png\",\r\n        \"producers\": [ \"David Heyman\", \"David Barron\" ],\r\n        \"summary\": \"Harry’s fifth year at Hogwarts is no short of trouble when a new Defence Against the Dark Arts teacher, Dolores Umbridge, is appointed by the ministry of magic. Umbridge refuses to teach any actual defensive spells, causing Harry to form a secret group of students called “Dumbledore’s Army” to learn and teach defensive spells. The connection between Harry and Voldemort’s mind grows stronger, and a concerned Dumbledore asks Snape to teach Occlumency to Harry. Harry experiences a surge of romantic feelings for someone. Things only get worse as Dumbledore’s Army is discovered and Umbridge is appointed as the new Headmistress. As Voldemort grows in power and the danger grows ever more, Harry might lose someone very close to him.\"\r\n      },\r\n      \"37acb245-c015-4bee-be87-c8f7d93d6d24\": {\r\n        \"id\": \"37acb245-c015-4bee-be87-c8f7d93d6d24\",\r\n        \"title\": \"Harry Potter and the Half-Blood Prince\",\r\n        \"duration\": \"153\",\r\n        \"budget\": \"250\",\r\n        \"release_date\": \"2009-07-07\",\r\n        \"box_office\": \"934.5\",\r\n        \"cinematographers\": [ \"Bruno Delbonnel\" ],\r\n        \"poster\": \"../assets/channels.png\",\r\n        \"producers\": [ \"David Heyman\", \"David Barron\" ],\r\n        \"summary\": \"The sixth installment in the Harry Potter series begins with Harry accompanying Dumbledore to persuade Horace Slughorn to return to teaching at Hogwarts. Harry suspects Malfoy is now a Death Eater and is determined to find out the truth. Harry eventually becomes Slughorn’s favorite student upon finding a book belonging to the “Half-Blood Prince”. Using this connection, Dumbledore successfully obtains a memory from Slughorn linking to a young Voldemort and his inquiries about Horcruxes. Harry and Dumbledore venture out to find and destroy a Horcrux unaware of the grave fate that awaits them.\"\r\n      },\r\n      \"e0fcd0ca-609c-4dd0-82e0-020482856380\": {\r\n        \"id\": \"e0fcd0ca-609c-4dd0-82e0-020482856380\",\r\n        \"title\": \"Harry Potter and the Deathly Hallows - Part 1\",\r\n        \"duration\": \"146\",\r\n        \"budget\": \"250\",\r\n        \"release_date\": \"2010-11-11\",\r\n        \"box_office\": \"977\",\r\n        \"cinematographers\": [ \"Eduardo Serra\" ],\r\n        \"poster\": \"../assets/channels.png\",\r\n        \"producers\": [ \"David Heyman\", \"David Barron\", \"J. K. Rowling\" ],\r\n        \"summary\": \"After Dumbledore's death, it is up to Harry, Ron, and Hermione to seek out the remaining Horcruxes and destroy them if they hope to defeat Voldemort. Each of them is passed on something from Dumbledore as clues to finding the Horcruxes. On their own, without the guidance of their professors or the protection of Professor Dumbledore, the three friends must now rely on one another more than ever. After managing to recover and destroy Slytherin’s locket, one of the Horcruxes, Hermione discovers about the Deathly Hallows from the book Dumbledore passed on to her. Will Harry be able to stop Voldemort if he recovers all the deathly hallows and becomes the Master of Death?\"\r\n      },\r\n      \"ffa6d8a5-4054-46ca-b8e6-9945283c8f18\": {\r\n        \"id\": \"ffa6d8a5-4054-46ca-b8e6-9945283c8f18\",\r\n        \"title\": \"Harry Potter and the Deathly Hallows – Part 2\",\r\n        \"duration\": \"130\",\r\n        \"budget\": \"250\",\r\n        \"release_date\": \"2011-07-07\",\r\n        \"box_office\": \"1,342\",\r\n        \"cinematographers\": [ \"Eduardo Serra\" ],\r\n        \"poster\": \"../assets/channels.png\",\r\n        \"producers\": [ \"David Heyman\", \"David Barron\", \"J. K. Rowling\" ],\r\n        \"summary\": \"In the epic conclusion to the Harry Potter series, Harry, Ron and Hermione rush to find the remaining Horcruxes and destroy them. Their search leads them to robbing the Gringotts bank and finally back to their home, Hogwarts. Voldemort kills Snape to win over the allegiance of the Elder Wand, who gives Harry a memory before dying. Going through the memory, Harry comes to realize the bitter truth that he must sacrifice himself to bring down Voldemort. As the final battle rages on at Hogwarts, death and destruction follow, and many of the loved characters draw their last breath. This final movie, takes all the previous installments and builds upon it, painting a beautiful end to the much loved tale of Harry Potter.\"\r\n      },\r\n      \"42f67e56-ec62-4e1a-9c26-04039b0e2494\": {\r\n        \"id\": \"42f67e56-ec62-4e1a-9c26-04039b0e2494\",\r\n        \"title\": \"Fantastic Beasts and Where to Find Them\",\r\n        \"duration\": \"133\",\r\n        \"budget\": \"175-200\",\r\n        \"release_date\": \"2016-11-10\",\r\n        \"box_office\": \"814\",\r\n        \"cinematographers\": [ \"Philippe Rousselot\" ],\r\n        \"poster\": \"../assets/channels.png\",\r\n        \"producers\": [ \"David Heyman\", \"J. K. Rowling\", \"Steve Kloves\", \"Lionel Wigram\" ],\r\n        \"summary\": \"Fantastic Beasts and Where to Find Them tells the tale of magizoologist Newton (Newt) Scamander and his adventure through New York City in the 1920s. A thrilling chase ensues when the magical creatures inside Newt’s suitcase are freed inside the city. Along with his new friends Jacob, a muggle, and Queenie, Newt must recapture all the creatures before they lay destruction to the city. However, things get complicated as a lurking Obscurial reveals itself and the Magical Congress of United States (MACUSA) intervenes.\"\r\n      },\r\n      \"2cc602f2-e544-4f00-aec3-6439fad910b9\": {\r\n        \"id\": \"2cc602f2-e544-4f00-aec3-6439fad910b9\",\r\n        \"title\": \"Fantastic Beasts: The Crimes of Grindelwald\",\r\n        \"duration\": \"134\",\r\n        \"budget\": \"200\",\r\n        \"release_date\": \"2018-11-16\",\r\n        \"box_office\": \"654.9\",\r\n        \"cinematographers\": [ \"Philippe Rousselot\" ],\r\n        \"poster\": \"../assets/channels.png\",\r\n        \"producers\": [ \"David Heyman\", \"J. K. Rowling\", \"Steve Kloves\", \"Lionel Wigram\" ],\r\n        \"summary\": \"Fantastic Beasts: The Crimes of Grindelwald continues the story of Newt Scamander as he chases Credence Barebone on orders by Dumbledore, who suspects him to be Corvus Lestrange V. A twisted tale of vengeance and treachery unveils itself as the story advances and the true identity of Credence becomes even more obscure. Grindelwald’s plan to cause a war between muggles and wizards is set into motion, and Credence joins him.\"\r\n      },\r\n      \"bcfd5548-da79-44df-a37b-511aa97d1834\": {\r\n        \"id\": \"bcfd5548-da79-44df-a37b-511aa97d1834\",\r\n        \"title\": \"Fantastic Beasts: The Secrets of Dumbledore\",\r\n        \"duration\": \"142\",\r\n        \"budget\": \"200\",\r\n        \"release_date\": \"2022-04-08\",\r\n        \"box_office\": \"379.8\",\r\n        \"cinematographers\": [ \"George Richmond\" ],\r\n        \"poster\": \"../assets/channels.png\",\r\n        \"producers\": [ \"David Heyman\", \"J. K. Rowling\", \"Steve Kloves\", \"Lionel Wigram\" ],\r\n        \"summary\": \"The third movie in the Fantastic Beast Series sees Grindelwald trying to destroy the muggle world as Newt and his allies including Dumbledore try to stop him. Grindelwald kills a Qilin, a magical beast, to become the Supreme Leader of the ICW. Credence rethinks his decision to join Grindelwald upon realizing that he is the illegitimate son of Aberforth Dumbledore. The epic showdown takes place in Bhutan, where Dumbledore and Grindelwald fight it out after the blood pact that prevented them from dueling breaks. Grindelwald disapparates from the place and his plans are put to end.\"\r\n      }\r\n    };\r\n    // @ts-ignore\r\n    return (options[param]);\r\n  }\r\n  },\r\n  {path: createPathRegExp('/movies'), mockData: () => {\r\n    return [\r\n      {\r\n        \"id\": \"e80d5a37-620e-4be2-92b9-fb1f5262494f\",\r\n        \"title\": \"Harry Potter and the Philosopher's Stone\",\r\n        \"duration\": \"152\",\r\n        \"budget\": \"125\",\r\n        \"release_date\": \"2001-11-04\"\r\n      }, {\r\n        \"id\": \"1e04ad42-c21f-40d3-9a7e-0a521980c192\",\r\n        \"title\": \"Harry Potter and the Chamber of Secrets\",\r\n        \"duration\": \"161\",\r\n        \"budget\": \"125\",\r\n        \"release_date\": \"2002-11-15\"\r\n      }, {\r\n        \"id\": \"ab80790f-0f6d-4ca7-bd7e-e7e1f06e6982\",\r\n        \"title\": \"Harry Potter and the Prisoner of Azkaban\",\r\n        \"duration\": \"142\",\r\n        \"budget\": \"130\",\r\n        \"release_date\": \"2002-11-15\"\r\n      }, {\r\n        \"id\": \"cae233c5-6b08-4201-a665-194110d9c889\",\r\n        \"title\": \"Harry Potter and the Goblet of Fire\",\r\n        \"duration\": \"157\",\r\n        \"budget\": \"150\",\r\n        \"release_date\": \"2005-11-06\"\r\n      }, {\r\n        \"id\": \"d8a28625-0704-45fe-9be5-cd795eb1b8f4\",\r\n        \"title\": \"Harry Potter and the Order of the Phoenix\",\r\n        \"duration\": \"138\",\r\n        \"budget\": \"150-200\",\r\n        \"release_date\": \"2007-07-11\"\r\n      }, {\r\n        \"id\": \"37acb245-c015-4bee-be87-c8f7d93d6d24\",\r\n        \"title\": \"Harry Potter and the Half-Blood Prince\",\r\n        \"duration\": \"153\",\r\n        \"budget\": \"250\",\r\n        \"release_date\": \"2009-07-07\"\r\n      }, {\r\n        \"id\": \"e0fcd0ca-609c-4dd0-82e0-020482856380\",\r\n        \"title\": \"Harry Potter and the Deathly Hallows - Part 1\",\r\n        \"duration\": \"146\",\r\n        \"budget\": \"250\",\r\n        \"release_date\": \"2010-11-11\"\r\n      }, {\r\n        \"id\": \"ffa6d8a5-4054-46ca-b8e6-9945283c8f18\",\r\n        \"title\": \"Harry Potter and the Deathly Hallows – Part 2\",\r\n        \"duration\": \"130\",\r\n        \"budget\": \"250\",\r\n        \"release_date\": \"2011-07-07\"\r\n      }, {\r\n        \"id\": \"42f67e56-ec62-4e1a-9c26-04039b0e2494\",\r\n        \"title\": \"Fantastic Beasts and Where to Find Them\",\r\n        \"duration\": \"133\",\r\n        \"budget\": \"175-200\",\r\n        \"release_date\": \"2016-11-10\"\r\n      }, {\r\n        \"id\": \"2cc602f2-e544-4f00-aec3-6439fad910b9\",\r\n        \"title\": \"Fantastic Beasts: The Crimes of Grindelwald\",\r\n        \"duration\": \"134\",\r\n        \"budget\": \"200\",\r\n        \"release_date\": \"2018-11-16\"\r\n      }, {\r\n        \"id\": \"bcfd5548-da79-44df-a37b-511aa97d1834\",\r\n        \"title\": \"Fantastic Beasts: The Secrets of Dumbledore\",\r\n        \"duration\": \"142\",\r\n        \"budget\": \"200\",\r\n        \"release_date\": \"2022-04-08\"\r\n      }\r\n    ]\r\n  }\r\n  },\r\n];\r\n\r\nexport function mockingInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> {\r\n  const mock = MOCKS.find(mock => mock.path.test(req.url));\r\n  if (mock) {\r\n    return of(new HttpResponse({body: mock.mockData(req.url.split(\"/\").at(-1)), status: 200}));\r\n  }\r\n  return next(req);\r\n}\r\n\r\n\r\nexport function fetchWithMocks(url: string, options?: RequestInit): Promise<Response> {\r\n  const mock = MOCKS.find(m => m.path.test(url));\r\n\r\n  if (mock) {\r\n    const param = url.split('/').pop();\r\n    const data = mock.mockData(param);\r\n    return Promise.resolve(\r\n      new Response(JSON.stringify(data), {\r\n        status: 200,\r\n        headers: { 'Content-Type': 'application/json' },\r\n      })\r\n    );\r\n  }\r\n\r\n  // fallback to real fetch\r\n  return fetch(url, options);\r\n}\r\n",
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\model\\movie.model.ts",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\movie-details\\movie-details.component.ts",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\movie-item\\movie-item.component.ts",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\pipes\\million-dollar.pipe.ts",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\pipes\\min-to-duration.pipe.ts",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\services\\favorites.service.ts",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\app\\services\\movies.service.ts",
+        "messages": [
+            {
+                "ruleId": "@typescript-eslint/no-explicit-any",
+                "severity": 2,
+                "message": "Unexpected any. Specify a different type.",
+                "line": 22,
+                "column": 21,
+                "nodeType": "TSAnyKeyword",
+                "messageId": "unexpectedAny",
+                "endLine": 22,
+                "endColumn": 24,
+                "suggestions": [
+                    {
+                        "messageId": "suggestUnknown",
+                        "fix": {
+                            "range": [
+                                761,
+                                764
+                            ],
+                            "text": "unknown"
+                        },
+                        "desc": "Use `unknown` instead, this will force you to explicitly, and safely assert the type is correct."
+                    },
+                    {
+                        "messageId": "suggestNever",
+                        "fix": {
+                            "range": [
+                                761,
+                                764
+                            ],
+                            "text": "never"
+                        },
+                        "desc": "Use `never` instead, this is useful when instantiating generic type parameters that you don't need to know the type of."
+                    }
+                ]
+            },
+            {
+                "ruleId": "@typescript-eslint/no-explicit-any",
+                "severity": 2,
+                "message": "Unexpected any. Specify a different type.",
+                "line": 64,
+                "column": 43,
+                "nodeType": "TSAnyKeyword",
+                "messageId": "unexpectedAny",
+                "endLine": 64,
+                "endColumn": 46,
+                "suggestions": [
+                    {
+                        "messageId": "suggestUnknown",
+                        "fix": {
+                            "range": [
+                                2183,
+                                2186
+                            ],
+                            "text": "unknown"
+                        },
+                        "desc": "Use `unknown` instead, this will force you to explicitly, and safely assert the type is correct."
+                    },
+                    {
+                        "messageId": "suggestNever",
+                        "fix": {
+                            "range": [
+                                2183,
+                                2186
+                            ],
+                            "text": "never"
+                        },
+                        "desc": "Use `never` instead, this is useful when instantiating generic type parameters that you don't need to know the type of."
+                    }
+                ]
+            }
+        ],
+        "suppressedMessages": [],
+        "errorCount": 2,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "source": "import {computed, inject, Injectable, resource, Signal} from '@angular/core';\r\nimport { HttpClient } from '@angular/common/http';\r\nimport {Movie, MovieDetails} from '../model/movie.model';\r\nimport {toSignal} from '@angular/core/rxjs-interop';\r\nimport { fetchWithMocks } from '../mock.interceptor';\r\nimport { map, Observable } from 'rxjs';\r\n\r\n@Injectable({\r\n  providedIn: 'root'\r\n})\r\nexport class MoviesService {\r\n  protected httpClient = inject(HttpClient);\r\n\r\n  getMovies(): Signal<Movie[]> {\r\n    return toSignal(this.httpClient.get<Movie[]>('/movies'), {initialValue: []});\r\n  }\r\n\r\n  getMovieDetails(movieId: string): Signal<MovieDetails | undefined> {\r\n    return toSignal(this.httpClient.get<MovieDetails>('/movies/'+ movieId))\r\n  }\r\n\r\n   users = resource<any, string>({\r\n    loader: async () => {\r\n      const response = await fetch(`https://jsonfakery.com/movies/paginated`);\r\n\r\n      if (!response.ok) throw new Error(\"Unable to load users!\");\r\n      return (await response.json());\r\n    },\r\n  });\r\n\r\n  movieResource = resource({\r\n    loader: async () => {\r\n      const response = await fetchWithMocks('/movies');\r\n      return await response.json();\r\n    },\r\n});\r\n  \r\n  getMoviesWithHttp(): Observable<Movie[]> {\r\n    return this.httpClient.get<Movie[]>('/movies');\r\n  }\r\n\r\n  getMovieDetailsWithHttp(movieId: string): Observable<MovieDetails> {\r\n    return this.httpClient.get<MovieDetails>('/movies/'+ movieId);\r\n  }\r\n\r\n  filterMovieList(title = '', year = '', movies: Signal<Movie[]>) {\r\n    // return computed(() => \r\n     return movies().filter((movie: Movie) =>\r\n        (year.length < 4 || (year.length === 4 && movie.release_date.split('-')[0].includes(year))) &&\r\n        movie.title.toLowerCase().includes(title.toLowerCase())\r\n      )\r\n    // );\r\n     }\r\n\r\n     filterMovieListWithObservable(title = '', year = ''): Observable<Movie[]> {\r\n      return this.getMoviesWithHttp().pipe(\r\n        map(movies => movies.filter(movie =>\r\n            (year.length < 4 || year.length === 4 && movie.release_date.split('-')[0].includes(year))\r\n            && movie.title.toLowerCase().includes(title))\r\n        )\r\n      );\r\n    }\r\n\r\n    addMovie(newMovie: Movie): Observable<any> {\r\n      return this.httpClient.post('/movies', newMovie);\r\n    }\r\n}\r\n",
+        "usedDeprecatedRules": []
+    },
+    {
+        "filePath": "C:\\demodata\\git\\angular\\moviesv21\\src\\index.html",
+        "messages": [],
+        "suppressedMessages": [],
+        "errorCount": 0,
+        "fatalErrorCount": 0,
+        "warningCount": 0,
+        "fixableErrorCount": 0,
+        "fixableWarningCount": 0,
+        "usedDeprecatedRules": []
+    }
+]

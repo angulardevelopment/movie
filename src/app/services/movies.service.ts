@@ -44,7 +44,6 @@ export class MoviesService {
   }
 
   filterMovieList(title = '', year = '', movies: Signal<Movie[]>) {
-    console.log('filterMovieList', title, year, movies());
     // return computed(() => 
      return movies().filter((movie: Movie) =>
         (year.length < 4 || (year.length === 4 && movie.release_date.split('-')[0].includes(year))) &&
